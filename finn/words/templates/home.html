@@ -2,9 +2,23 @@
 
 {% block content %}
     {% if user.is_authenticated %}
+    <h2>Hello, {{ user.username }}!</h2>
+    <form
+        method='POST'
+        style='margin-bottom:10px'
+    >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type='submit'>
+            Save
+        </button>
+    </form>
         {% if words %}
+            <h3>Your words</h3>
             {% for word in words %}
-                {{ word.eng }} - {{ word.fin }}
+                <p>
+                    {{ word.eng }} - {{ word.fin }}
+                </p>
             {% endfor %}
         {% else %}
             <p>You have no words</p>
