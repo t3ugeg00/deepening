@@ -1,0 +1,16 @@
+{% extends "header.html" %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if words %}
+            {% for word in words %}
+                {{ word.eng }} - {{ word.fin }}
+            {% endfor %}
+        {% else %}
+            <p>You have no words</p>
+        {% endif %}
+    {% else %}
+        <p>Log in to view your words</p>
+        <a href='/user/login'>Continue</a>
+    {% endif %}
+{% endblock  %}
