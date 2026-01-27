@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import WordForm
+from .models import Word
 
 # Create your views here.
 
@@ -18,3 +19,11 @@ def user_words(req):
         return render(req, 'home.html', {'words': words, 'form': form})
     else:
         return render(req, 'home.html', {'words': []})
+    
+def delete_word(req, pk):
+    word = get_object_or_404(Word, pk=pk, user=req.user)
+
+    if req.method == 'POST':
+        word.delete()
+
+    return redirect('home')

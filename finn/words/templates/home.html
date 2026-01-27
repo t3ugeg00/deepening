@@ -15,11 +15,34 @@
     </form>
         {% if words %}
             <h3>Your words</h3>
-            {% for word in words %}
-                <p>
-                    {{ word.eng }} - {{ word.fin }}
-                </p>
-            {% endfor %}
+            <table>
+                {% for word in words %}
+                    <tr>
+                        <td>
+                            {{ word.eng }}
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            {{ word.fin }}
+                        </td>
+                        <td>
+                            <form
+                                method="POST"
+                                action={% url "delete_word" word.id %}
+                            >
+                                {% csrf_token %}
+                                <button
+                                    type='submit'
+                                >
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         {% else %}
             <p>You have no words</p>
         {% endif %}
@@ -27,4 +50,9 @@
         <p>Log in to view your words</p>
         <a href='/user/login'>Continue</a>
     {% endif %}
+    <style>
+        td {
+            padding: 5px
+        }
+    </style>
 {% endblock  %}
