@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import WordForm
 from .models import Word
+import random
 
 # Create your views here.
 
@@ -27,3 +28,17 @@ def delete_word(req, pk):
         word.delete()
 
     return redirect('home')
+
+def random_word(req):
+    if not req.user.is_authenticated:
+        return render(req, 'card.html', {'word': {}})
+    
+    count = req.user.word.count()
+
+    if count == 0:
+        word = {}
+    else:
+        i = random.randint(0, count - 1)
+        word = Word.objects.all()[i]
+
+    return render(req, 'card.html', {'word': word})

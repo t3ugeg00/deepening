@@ -1,0 +1,41 @@
+{% extends "header.html" %}
+
+{% block content %}
+    <div
+        style='box-sizing:border-box; display:flex; justify-content:center; align-items:center; flex-direction:column; gap:20px'
+    >
+        {% if user.is_authenticated %}
+            <button
+                style='padding:20px'
+                onclick='flip()'
+                id='card'
+            >
+                {{ word.fin }}
+            </button>
+
+            <a
+                href='/card'
+            >
+                Next
+            </a>
+        {% else %}
+            <a
+                href='/user/login'
+            >
+                Log in to view cards
+            </a>
+        {% endif %}
+    </div>
+
+    <script>
+        function flip() {
+            const card = document.getElementById('card')
+            if (card.innerHTML == '{{ word.eng|escapejs }}') {
+                card.innerHTML = '{{ word.fin|escapejs }}'
+            } else {
+                card.innerHTML = '{{ word.eng|escapejs }}'
+            }
+        }
+    </script>
+
+{% endblock %}
