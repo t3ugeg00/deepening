@@ -29,16 +29,10 @@ def delete_word(req, pk):
 
     return redirect('home')
 
-def random_word(req):
+def shuffled_words(req):
     if not req.user.is_authenticated:
-        return render(req, 'card.html', {'word': {}})
+        return render(req, 'card.html', {'words': []})
     
-    count = req.user.word.count()
+    words = req.user.word.order_by("?").values("eng", "fin")
 
-    if count == 0:
-        word = {}
-    else:
-        i = random.randint(0, count - 1)
-        word = Word.objects.all()[i]
-
-    return render(req, 'card.html', {'word': word})
+    return render(req, 'card.html', {'words': list(words)})
