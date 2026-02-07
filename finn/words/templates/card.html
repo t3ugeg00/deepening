@@ -1,0 +1,110 @@
+{% extends "header.html" %}
+
+{% block content %}
+    {{ words|json_script:'words_ref' }}
+
+    <div
+        style='box-sizing:border-box; display:flex; justify-content:center; align-items:center; flex-direction:column; gap:20px'
+    >
+        {% if user.is_authenticated %}
+            {% if words %}
+                <button
+                    style='padding:20px'
+                    onclick='flip()'
+                    id='card'
+                ></button>
+                <table>
+                    <tr>
+                        <td>
+                            <button
+                                id='prev'
+                                style='display:none'
+                                onclick='prev()'
+                            >
+                                Prev
+                            </button>
+                        </td>
+                        <td>
+                            <button
+                                id='next'
+                                onclick='next()'
+                            >
+                                Next
+                            </button>
+                        </td>
+                    </tr>
+                    <tr
+                        id='reset'
+                        style='display:none'
+                    >
+                        <td>
+                            <a
+                                href='/card'
+                            >
+                                Reset
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            {% else %}
+                <p>
+                    You have no words. <a href='/'>Add some!</a>
+                </p>
+            {% endif %}
+        {% else %}
+            <a
+                href='/user/login'
+            >
+                Log in to view cards
+            </a>
+        {% endif %}
+    </div>
+
+    <script>
+        function flip() {
+            if (card.innerHTML == words[i].fin) {
+                card.innerHTML = words[i].eng
+            } else {
+                card.innerHTML = words[i].fin
+            }
+        }
+
+        function next() {
+            i++
+            card.innerHTML = words[i].fin
+
+            if (i + 1 == words.length) {
+                next_btn.style.display = 'none'
+                reset.style.display = 'block'
+            }
+
+            prev_btn.style.display = 'block'
+        }
+
+        function prev() {
+            i--
+            card.innerHTML = words[i].fin
+
+            if (i == 0) {
+                prev_btn.style.display = 'none'
+            }
+
+            next_btn.style.display = 'block'
+            reset.style.display = 'none'
+        }
+
+        const words = JSON.parse(
+            document.getElementById('words_ref').textContent
+        )
+        const card = document.getElementById('card')
+        const prev_btn = document.getElementById('prev')
+        const next_btn = document.getElementById('next')
+        const reset = document.getElementById('reset')
+
+        let i = 0
+        if (words.length != 0) {
+            card.innerHTML = words[i].fin
+        }
+    </script>
+
+{% endblock %}

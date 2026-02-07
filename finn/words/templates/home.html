@@ -1,0 +1,58 @@
+{% extends "header.html" %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+    <h2>Hello, {{ user.username }}!</h2>
+    <form
+        method='POST'
+        style='margin-bottom:10px'
+    >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type='submit'>
+            Save
+        </button>
+    </form>
+        {% if words %}
+            <h3>Your words</h3>
+            <table>
+                {% for word in words %}
+                    <tr>
+                        <td>
+                            {{ word.eng }}
+                        </td>
+                        <td>
+                            -
+                        </td>
+                        <td>
+                            {{ word.fin }}
+                        </td>
+                        <td>
+                            <form
+                                method="POST"
+                                action={% url "delete_word" word.id %}
+                            >
+                                {% csrf_token %}
+                                <button
+                                    type='submit'
+                                >
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You have no words</p>
+        {% endif %}
+    {% else %}
+        <p>Log in to view your words</p>
+        <a href='/user/login'>Continue</a>
+    {% endif %}
+    <style>
+        td {
+            padding: 5px
+        }
+    </style>
+{% endblock  %}
