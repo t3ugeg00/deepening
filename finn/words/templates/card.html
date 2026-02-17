@@ -1,110 +1,191 @@
 {% extends "header.html" %}
-
 {% block content %}
-    {{ words|json_script:'words_ref' }}
 
-    <div
-        style='box-sizing:border-box; display:flex; justify-content:center; align-items:center; flex-direction:column; gap:20px'
-    >
-        {% if user.is_authenticated %}
-            {% if words %}
-                <button
-                    style='padding:20px'
-                    onclick='flip()'
-                    id='card'
-                ></button>
-                <table>
-                    <tr>
-                        <td>
-                            <button
-                                id='prev'
-                                style='display:none'
-                                onclick='prev()'
-                            >
-                                Prev
-                            </button>
-                        </td>
-                        <td>
-                            <button
-                                id='next'
-                                onclick='next()'
-                            >
-                                Next
-                            </button>
-                        </td>
-                    </tr>
-                    <tr
-                        id='reset'
-                        style='display:none'
-                    >
-                        <td>
-                            <a
-                                href='/card'
-                            >
-                                Reset
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-            {% else %}
-                <p>
-                    You have no words. <a href='/'>Add some!</a>
-                </p>
-            {% endif %}
-        {% else %}
-            <a
-                href='/user/login'
-            >
-                Log in to view cards
-            </a>
-        {% endif %}
+{{ words|json_script:'words_ref' }}
+
+<style>
+
+/* Keeps the flashcards in the center of the screen */
+.flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    gap: 30px;
+}
+
+/* Puts the contents of flashcard in a box */
+.flashcard {
+    width: 1000px;
+    height: 500px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    cursor: pointer;
+}
+
+/* The main formatting of the flashcards inside the box containing backfaces of flashcards */
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    font-size: 38px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;    
+    /* Added this cause I noticed that too long words would break the box, ensures that the words stay inside the box */
+    word-break: break-word;   
+    padding: 5px;
+}
+
+/* Flashcard flip animation to show the back of a card */
+.flashcard.flip {
+    transform: rotateY(180deg);
+}
+
+/* Controls how wide the flashcard is in the animation (the perspective[field of view])  */
+.card-wrapper {
+    perspective: 1500px;
+}
+
+/* Back of the flashcard */
+.card-back {
+    transform: rotateY(180deg);
+}
+
+/* The gap between buttons below the flashcard */
+.controls {
+    display: flex;
+    gap: 15px;
+}
+
+/* The styling of the buttons below the flashcard */
+button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: none;
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* How high buttons float on hover */
+button:hover {
+    transform: translateY(-2px);
+}
+
+
+</style>
+
+<div class="flashcard-container">
+
+{% if user.is_authenticated %}
+    {% if words %}
+
+    
+    <div class="card-wrapper">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="card-face card-front" id="card-front"></div>
+            <div class="card-face card-back" id="card-back"></div>
+        </div>
     </div>
 
-    <script>
-        function flip() {
-            if (card.innerHTML == words[i].fin) {
-                card.innerHTML = words[i].eng
-            } else {
-                card.innerHTML = words[i].fin
-            }
-        }
+    <div class="controls">
+        <button id="prev" onclick="prevCard()">Prev</button>
+        <button id="next" onclick="nextCard()">Next</button>
+        <button onclick="resetCards()">Reset</button>
+    </div>
 
-        function next() {
-            i++
-            card.innerHTML = words[i].fin
+    {% else %}
+        <p>You have no words. <a href="/">Add some!</a></p>
+    {% endif %}
+{% else %}
+    <a href="/user/login">Log in to view cards</a>
+{% endif %}
 
-            if (i + 1 == words.length) {
-                next_btn.style.display = 'none'
-                reset.style.display = 'block'
-            }
+</div>
 
-            prev_btn.style.display = 'block'
-        }
+<script>
+const words = JSON.parse(
+    document.getElementById('words_ref').textContent
+);
 
-        function prev() {
-            i--
-            card.innerHTML = words[i].fin
+const flashcard = document.getElementById("flashcard");
+const front = document.getElementById("card-front");
+const back = document.getElementById("card-back");
+const prevBtn = document.getElementById("prev");
+const nextBtn = document.getElementById("next");
 
-            if (i == 0) {
-                prev_btn.style.display = 'none'
-            }
+let index = 0;
+let flipped = false;
+let isAnimating = false;
 
-            next_btn.style.display = 'block'
-            reset.style.display = 'none'
-        }
+function updateButtons() {
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === words.length - 1;
+}
 
-        const words = JSON.parse(
-            document.getElementById('words_ref').textContent
-        )
-        const card = document.getElementById('card')
-        const prev_btn = document.getElementById('prev')
-        const next_btn = document.getElementById('next')
-        const reset = document.getElementById('reset')
+function loadCard() {
+    front.innerHTML = words[index].eng;
+    back.innerHTML = words[index].fin;
+    updateButtons();
+}
 
-        let i = 0
-        if (words.length != 0) {
-            card.innerHTML = words[i].fin
-        }
-    </script>
+function flipCard() {
+    if (isAnimating) return;
+
+    flashcard.classList.toggle("flip");
+    flipped = !flipped;
+}
+
+function changeCard(newIndex) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    function switchContent() {
+        index = newIndex;
+        loadCard();
+        isAnimating = false;
+    }
+
+    if (flipped) {
+        flashcard.classList.remove("flip");
+        flipped = false;
+
+
+        setTimeout(switchContent, 220);
+    } else {
+        switchContent();
+    }
+}
+
+function nextCard() {
+    if (index < words.length - 1) {
+        changeCard(index + 1);
+    }
+}
+
+function prevCard() {
+    if (index > 0) {
+        changeCard(index - 1);
+    }
+}
+
+function resetCards() {
+    changeCard(0);
+}
+
+if (words.length > 0) {
+    loadCard();
+}
+</script>
+
 
 {% endblock %}
