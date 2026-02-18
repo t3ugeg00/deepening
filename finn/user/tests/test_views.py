@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-class UserRegistrationViewTest(TestCase):
+class TestUserRegistrationView(TestCase):
     def test_url_exists_at_desired_location(self):
         res = self.client.get('/user/register/')
 

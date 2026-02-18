@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import WordForm
 from .models import Word
-import random
 
 # Create your views here.
 
