@@ -49,11 +49,12 @@
         <a href="{% url 'change_password' %}">
             <button class="btn">Change Password</button>
         </a>
-        <a href="{% url 'logout' %}">
-            <button class="btn" style="background: #f44336;">Logout</button>
-        </a>
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn" style="background: #f44336;" type="submit">Logout</button>
+        </form>
         
-        <p><a href="/user/">← Back to Home</a></p>
+        <p><a href="/">← Back to Home</a></p>
     </div>
 </body>
 </html>
