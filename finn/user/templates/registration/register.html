@@ -1,6 +1,117 @@
 {% extends "header.html" %}
 
 {% block content %}
+<style>
+    .auth-container {
+        max-width: 450px;
+        margin: 40px auto;
+        padding: 30px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 28px;
+    }
+    
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    form p {
+        margin-bottom: 20px;
+    }
+    
+    form label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: 500;
+    }
+    
+    form input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    
+    form input:focus {
+        outline: none;
+        border-color: #333;
+    }
+    
+    button {
+        background: #333;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 10px;
+    }
+    
+    button:hover {
+        background: #000;
+    }
+    
+    p {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+    }
+    
+    a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Style for help text (password requirements) */
+    .helptext {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        margin-top: 5px;
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+        border-left: 3px solid #333;
+    }
+    
+    .helptext ul {
+        margin: 5px 0 5px 20px;
+        padding-left: 0;
+    }
+    
+    .helptext li {
+        margin-bottom: 3px;
+    }
+    
+    /* Style for error messages */
+    .errorlist {
+        color: #dc3545;
+        list-style: none;
+        padding: 0;
+        margin: 5px 0;
+        font-size: 14px;
+    }
+</style>
+
+<div class="auth-container">
     <h2>Sign Up</h2>
     <form method='POST'>
         {% csrf_token %}
@@ -8,4 +119,5 @@
         <button type='submit'>Register</button>
         <p>Already have an account? <a href='/user/login'>Log in</a></p>
     </form>
-{% endblock  %}
+</div>
+{% endblock %}
