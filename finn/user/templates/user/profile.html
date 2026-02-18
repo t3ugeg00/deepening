@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 40px auto; }
+        .profile-card { border: 1px solid #ddd; padding: 20px; border-radius: 5px; }
+        .info-item { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { margin-left: 10px; }
+        .btn { background: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; margin: 10px 0; }
+        a { color: #0066cc; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="profile-card">
+        <h2>My Profile</h2>
+        
+        <div class="info-item">
+            <span class="label">Username:</span>
+            <span class="value">{{ user.username }}</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ user.email|default:"Not set" }}</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="label">Full Name:</span>
+            <span class="value">{{ user.first_name }} {{ user.last_name }}</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="label">Member Since:</span>
+            <span class="value">{{ user.date_joined|date:"F j, Y" }}</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="label">Last Login:</span>
+            <span class="value">{{ user.last_login|date:"F j, Y, g:i a"|default:"Never" }}</span>
+        </div>
+        
+        <hr>
+        
+        <a href="{% url 'account' %}">
+            <button class="btn">Edit Account</button>
+        </a>
+        <a href="{% url 'change_password' %}">
+            <button class="btn">Change Password</button>
+        </a>
+        <a href="{% url 'logout' %}">
+            <button class="btn" style="background: #f44336;">Logout</button>
+        </a>
+        
+        <p><a href="/user/">← Back to Home</a></p>
+    </div>
+</body>
+</html>
