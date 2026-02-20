@@ -3,59 +3,202 @@
 <head>
     <title>My Account</title>
     <style>
-        .form-group { margin: 15px 0; }
-        label { display: block; font-weight: bold; }
-        input, textarea { width: 300px; padding: 5px; }
+        body { 
+            max-width: 450px; 
+            margin: 40px auto; 
+            background: #f5f5f5;
+        }
+        
+        .account-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        h2 { 
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        h3 { 
+            text-align: center;
+            font-size: 20px;
+            margin: 25px 0 20px 0;
+            color: #333;
+        }
+        
+        .message {
+            padding: 12px 20px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        label { 
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        input { 
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 100%;
+            font-size: 16px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #333;
+        }
+        
+        input:disabled {
+            background: #f5f5f5;
+            color: #666;
+            text-align: center;
+        }
+        
+        small {
+            display: block;
+            text-align: center;
+            margin-top: 8px;
+            color: #666;
+            font-size: 13px;
+        }
+        
+        button[type="submit"] { 
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: #2b4db4b9;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 10px auto 20px auto;
+            display: block;
+            min-width: 150px;
+        }
+        
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 25px 0;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        
+        li {
+            margin: 15px 0;
+        }
+        
+        li a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 15px;
+            display: inline-block;
+        }
+        
+        li a:hover {
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <h2>My Account</h2>
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div style="color: green; padding: 10px; background: #e8f5e8;">
-                {{ message }}
+    <div class="account-card">
+        <h2>My Account</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <h3>User Information</h3>
+            
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" value="{{ user.username }}" disabled>
+                <small>Username cannot be changed</small>
             </div>
-        {% endfor %}
-    {% endif %}
-    
-    <form method="POST">
-        {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" name="email" value="{{ user.email }}">
+            </div>
+            
+            <div class="form-group">
+                <label>First Name:</label>
+                <input type="text" name="first_name" value="{{ user.first_name }}">
+            </div>
+            
+            <div class="form-group">
+                <label>Last Name:</label>
+                <input type="text" name="last_name" value="{{ user.last_name }}">
+            </div>
+            
+            <button type="submit">Update Profile</button>
+        </form>
         
-        <h3>User Information</h3>
-        <div class="form-group">
-            <label>Username:</label>
-            <input type="text" value="{{ user.username }}" disabled>
-            <small>Username cannot be changed</small>
+        <hr>
+        
+        <h3>Account Actions</h3>
+        <ul>
+            <li><a href="{% url 'change_password' %}">Change Password</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            <li><a href="/admin/" target="_blank">Admin Panel</a></li>
+        </ul>
+        
+        <div class="back-link">
+            <a href="/user/profile">← Back to Profile</a>
         </div>
-        
-        <div class="form-group">
-            <label>Email:</label>
-            <input type="email" name="email" value="{{ user.email }}">
-        </div>
-        
-        <div class="form-group">
-            <label>First Name:</label>
-            <input type="text" name="first_name" value="{{ user.first_name }}">
-        </div>
-        
-        <div class="form-group">
-            <label>Last Name:</label>
-            <input type="text" name="last_name" value="{{ user.last_name }}">
-        </div>
-        
-        <button type="submit" style="padding: 10px 20px;">Update Profile</button>
-    </form>
-    
-    <hr>
-    
-    <h3>Account Actions</h3>
-    <ul>
-        <li><a href="{% url 'change_password' %}">Change Password</a></li>
-        <li><a href="{% url 'logout' %}">Logout</a></li>
-        <li><a href="/admin/" target="_blank">Admin Panel</a></li>
-    </ul>
-    
-    <p><a href="/user/profile">← Back to Profile</a></p>
+    </div>
 </body>
 </html>
