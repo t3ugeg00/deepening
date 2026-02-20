@@ -34,6 +34,12 @@ input {
     width: 50%;
 }
 
+/* Changes outline color when clicking the input */
+ form input:focus {
+        outline: none;
+        border-color: #333;
+}
+
 /* Styling for the "save" button */
 button {
     padding: 10px 20px;
@@ -76,6 +82,15 @@ button:hover {
     background-color: #ff15009f;
 }
 
+/* Removes the line under "Home/Cards/Profile" text */
+a {
+    text-decoration: none;
+ }
+
+/* Adds the line under "Home/Cards/Profile" text when hovered over (with a mouse, or briefly when pressing the text using mobile devices)  */
+ a:hover {
+        text-decoration: underline;
+}
 
 </style>
 
